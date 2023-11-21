@@ -85,6 +85,10 @@ services:
       INFLUXDB_USER_READ_DATABASE: telegraf
       INFLUXDB_USER_WRITE_DATABASE: telegraf
       INFLUXDB_ADMIN_USER_TOKEN: ${AUTH_TOKEN}
+      INFLUXDB_ORG: 'mema_org'
+      INFLUXDB_BUCKET: 'mema_bucket'
+    volumes:
+      - ./influxdb:/var/lib/influxdb
 
 
   grafana:
