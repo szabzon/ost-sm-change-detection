@@ -77,7 +77,7 @@ services:
     ports:
       - "8086:8086"
     environment:
-      INFLUXDB_DB: mydb
+      INFLUXDB_DB: influxdb
       INFLUXDB_ADMIN_USER: ${ADMIN_USERNAME}
       INFLUXDB_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       INFLUXDB_USER: telegraf_user
