@@ -1,5 +1,9 @@
 version: '3.6'
 
+networks:
+  ost-sm:
+    driver: bridge
+
 # Services
 # Zookeeper, Kafka, Kafka Manager
 services:
@@ -9,6 +13,8 @@ services:
       - "2181:2181"
     environment:
       ALLOW_ANONYMOUS_LOGIN: 1
+    networks:
+      - ost-sm
 
   kafka:
     image: 'bitnami/kafka:latest'
@@ -19,6 +25,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_HOSTNAME: localhost
       ALLOW_PLAINTEXT_LISTENER: 1
+    networks:
+      - ost-sm
 
   kafka_manager:
     image: hlebalbau/kafka-manager:stable
@@ -27,6 +35,8 @@ services:
     environment:
       ZK_HOSTS: "zookeeper:2181"
       APPLICATION_SECRET: "random-secret"
+    networks:
+      - ost-sm
 
   flink-jobmanager:
     image: flink:latest
@@ -35,22 +45,28 @@ services:
     ports:
       - "8081:8081"
     command: jobmanager
+    networks:
+      - ost-sm
 
-  flink-taskmanager:
-    image: flink:latest
-    expose:
-      - "6121"
-    command: taskmanager
-    links:
-      - flink-jobmanager:jobmanager
+  # flink-taskmanager:
+  #   image: flink:latest
+  #   expose:
+  #     - "6121"
+  #   command: taskmanager
+  #   links:
+  #     - flink-jobmanager:jobmanager
+  #   networks:
+  #     - ost-sm
 
   # telegraf, influxdb, grafana
   telegraf:
-      image: telegraf:latest
-      volumes:
-      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
-      links:
-      - influxdb
+    image: telegraf:latest
+    volumes:
+    - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    links:
+    - influxdb
+    networks:
+      - ost-sm
 
   influxdb:
     image: influxdb:latest
@@ -62,6 +78,8 @@ services:
       INFLUXDB_ADMIN_PASSWORD: admin
       INFLUXDB_USER: user
       INFLUXDB_USER_PASSWORD: password
+    networks:
+      - ost-sm
 
   grafana:
     image: grafana/grafana:latest
@@ -74,3 +92,23 @@ services:
     links:
       - influxdb
       - telegraf
+    networks:
+      - ost-sm
+
+  spark:
+    image: "jupyter/pyspark-notebook"
+    ports:
+      - '8888:8888'
+      - '4040:4040'
+      - '4041:4041'
+    links:
+      - "kafka:kafka-server" # allows spark notebook to discover kafka service by name "kafka-server"
+    volumes:
+      - type: bind
+        source: ./
+        target: /home/jovyan/work
+    networks:
+      - ost-sm
+
+    depends_on:
+      - zookeeper 
