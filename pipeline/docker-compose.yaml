@@ -78,12 +78,13 @@ services:
       - "8086:8086"
     environment:
       INFLUXDB_DB: mydb
-      INFLUXDB_ADMIN_USER: admin
-      INFLUXDB_ADMIN_PASSWORD: admin
+      INFLUXDB_ADMIN_USER: ${ADMIN_USERNAME}
+      INFLUXDB_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       INFLUXDB_USER: telegraf_user
       INFLUXDB_USER_PASSWORD: telegraf_pass
       INFLUXDB_USER_READ_DATABASE: telegraf
       INFLUXDB_USER_WRITE_DATABASE: telegraf
+      INFLUXDB_ADMIN_USER_TOKEN: ${AUTH_TOKEN}
 
 
   grafana:
