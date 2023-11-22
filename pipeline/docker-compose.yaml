@@ -13,11 +13,9 @@ services:
       - "2181:2181"
     environment:
       ALLOW_ANONYMOUS_LOGIN: 1
-    networks:
-      - ost-sm
 
   kafka:
-    image: 'bitnami/kafka:latest'
+    image: 'bitnami/kafka:2.8.1'
     ports:
       - "9092:9092"
     environment:
@@ -25,8 +23,6 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_HOSTNAME: localhost
       ALLOW_PLAINTEXT_LISTENER: 1
-    networks:
-      - ost-sm
 
   kafka_manager:
     image: hlebalbau/kafka-manager:stable
@@ -35,8 +31,6 @@ services:
     environment:
       ZK_HOSTS: "zookeeper:2181"
       APPLICATION_SECRET: "random-secret"
-    networks:
-      - ost-sm
 
   flink-jobmanager:
     image: flink:latest
