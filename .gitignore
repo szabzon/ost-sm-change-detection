@@ -15,3 +15,5 @@
 /dataSources/
 /dataSources.local.xml
 /.idea/.gitignore
+/data_loading/hai-23_05/*.csv
+/data_loading/hai-23_05/*.txt
