@@ -1,2 +1,17 @@
 .conda
 /.idea/misc.xml
+/venv/
+/.idea
+/.idea/modules.xml
+/.idea/ost-sm-change-detection.iml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/vcs.xml
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+/.idea/.gitignore
