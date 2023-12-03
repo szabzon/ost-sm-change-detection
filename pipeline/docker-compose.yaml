@@ -62,6 +62,8 @@ services:
       INFLUXDB_ADMIN_USER_TOKEN: my_token
       INFLUXDB_ORG: 'mema_org'
       INFLUXDB_BUCKET: 'mema_bucket'
+      auth-enabled: false
+      #INFLUXDB_INIT_ADMIN_TOKEN: KhCHcNg3HKvFoQtwNUPMw9E-pu-8BXJV3vaKvbywYQepdfAObDPKOdpETQ8anolwq1nTmIQJtRTkLf8auFndiw==
     volumes:
       - ./influxdb:/var/lib/influxdb
     networks:
