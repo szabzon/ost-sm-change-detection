@@ -5,8 +5,16 @@ networks:
     driver: bridge
 
 # Services
-# Zookeeper, Kafka, Kafka Manager
+# Zookeeper, Kafka, Kafka Manager, Pyspark
 services:
+
+  pyspark:
+    image: "jupyter/all-spark-notebook"
+    volumes:
+      - /Users/emmatosato/Documents/UNI Locale/Erasmus/OST/ost-sm-change-detection/data_analysis
+    ports:
+      - '8889:8888'
+
   zookeeper:
     image: wurstmeister/zookeeper:latest
     ports:
