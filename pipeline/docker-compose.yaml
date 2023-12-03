@@ -46,14 +46,6 @@ services:
   #   networks:
   #     - ost-sm
 
-  # scikit-multiflow
-  scikit-multiflow:
-    image: skmultiflow/scikit-multiflow:latest
-    ports:
-      - "5001:5000"
-    stdin_open: true
-    tty: true
-
   # telegraf, influxdb, grafana
   telegraf:
     container_name: telegraf
