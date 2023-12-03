@@ -1,16 +1,16 @@
 version: '3.6'
 
 networks:
-  ost-sm:
-    driver: bridge
+  - host
 
-# Services
-# Zookeeper, Kafka, Kafka Manager
 services:
   zookeeper:
+    container_name: zookeeper
     image: wurstmeister/zookeeper:latest
     ports:
       - "2181:2181"
+    networks:
+      - host
 
   kafka:
     image: wurstmeister/kafka:latest
@@ -25,10 +25,27 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
-      KAFKA_CREATE_TOPICS: "hai-input:1:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    #command: "bash -c 'start-kafka.sh && ls && sleep 10 && kafka-topics.sh --bootstrap-server localhost:9092 --create --topic hai-input --partitions 1 --replication-factor 1'"
+
+  flink-jobmanager:
+    container_name: flink-jobmanager
+    image: flink:latest
+    expose:
+      - "6123"
+    ports:
+      - "8081:8081"
+    command: jobmanager
+
+  # flink-taskmanager:
+  #   image: flink:latest
+  #   expose:
+  #     - "6121"
+  #   command: taskmanager
+  #   links:
+  #     - flink-jobmanager:jobmanager
+  #   networks:
+  #     - ost-sm
 
   # telegraf, influxdb, grafana
   telegraf:
@@ -39,15 +56,15 @@ services:
       - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
     depends_on:
       - influxdb
-    links:
-      - influxdb
+  #   links:
+  #     - influxdb
     ports:
       - "8125:8125"
     networks:
-      - ost-sm
-
+      - host
 
   influxdb:
+    container_name: influxdb
     image: influxdb:latest
     ports:
       - "8086:8086"
@@ -59,14 +76,11 @@ services:
       INFLUXDB_USER_PASSWORD: telegraf_pass
       INFLUXDB_USER_READ_DATABASE: telegraf
       INFLUXDB_USER_WRITE_DATABASE: telegraf
-      INFLUXDB_ADMIN_USER_TOKEN: my_token
+      INFLUXDB_ADMIN_USER_TOKEN: ${AUTH_TOKEN}
       INFLUXDB_ORG: 'mema_org'
       INFLUXDB_BUCKET: 'mema_bucket'
     volumes:
-      - ./influxdb:/var/lib/influxdb
-    networks:
-      - ost-sm
-
+      - ./influxdb:
 
   grafana:
     image: grafana/grafana:latest
