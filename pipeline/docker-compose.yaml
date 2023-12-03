@@ -5,6 +5,13 @@ networks:
     driver: bridge
 
 # Services
+# scikit-multiflow
+scikit-multiflow:
+  image: skmultiflow/scikit-multiflow:latest
+  stdin_open: true
+  tty: true
+
+
 # Zookeeper, Kafka, Kafka Manager
 services:
   zookeeper:
