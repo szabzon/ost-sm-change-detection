@@ -82,6 +82,20 @@ services:
     volumes:
       - ./influxdb:
 
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+    links:
+      - influxdb
+      - telegraf
+    networks:
+      - ost-sm
+
   spark:
     image: "jupyter/pyspark-notebook"
     ports:
