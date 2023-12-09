@@ -1,17 +1,24 @@
+# Description: docker-compose file for the pipeline
 version: '3.6'
 
+# Networks
+# ost-sm: network for the services,
+#this will be used by the services to communicate with each other
 networks:
-  - host
+  ost-sm:
+    driver: bridge
 
+# Services
+# Zookeeper, Kafka
 services:
   zookeeper:
-    container_name: zookeeper
     image: wurstmeister/zookeeper:latest
     ports:
       - "2181:2181"
     networks:
-      - host
+      - ost-sm
 
+  # kafka service using wurstmeister/kafka image
   kafka:
     image: wurstmeister/kafka:latest
     ports:
@@ -25,50 +32,44 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_CREATE_TOPICS: "hai-input:1:1,hai-preprocessed:1:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
-  flink-jobmanager:
-    container_name: flink-jobmanager
-    image: flink:latest
-    expose:
-      - "6123"
-    ports:
-      - "8081:8081"
-    command: jobmanager
-
-  # flink-taskmanager:
-  #   image: flink:latest
-  #   expose:
-  #     - "6121"
-  #   command: taskmanager
-  #   links:
-  #     - flink-jobmanager:jobmanager
-  #   networks:
-  #     - ost-sm
+    depends_on:
+      - zookeeper
+    networks:
+      - ost-sm
+    #command: "bash -c 'start-kafka.sh && ls && sleep 10 && kafka-topics.sh --bootstrap-server localhost:9092 --create --topic hai-input --partitions 1 --replication-factor 1'"
 
   # telegraf, influxdb, grafana
+
+  # telegraf service
   telegraf:
-    container_name: telegraf
     image: telegraf:latest
     restart: always
     volumes:
       - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
     depends_on:
       - influxdb
-  #   links:
-  #     - influxdb
+      - kafka
+    links:
+      - influxdb
+      - kafka
     ports:
       - "8125:8125"
     networks:
-      - host
+      - ost-sm
 
+  # influxdb service
   influxdb:
-    container_name: influxdb
     image: influxdb:latest
     ports:
       - "8086:8086"
     environment:
+      # some of these do not seem to have any effect
+      # e.g. token and users are not created
+      # TODO: investigate
+      # when you first run the docker-compose file, you need to create the token and users manually!
       INFLUXDB_DB: influxdb
       INFLUXDB_ADMIN_USER: ${ADMIN_USERNAME}
       INFLUXDB_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
@@ -76,12 +77,15 @@ services:
       INFLUXDB_USER_PASSWORD: telegraf_pass
       INFLUXDB_USER_READ_DATABASE: telegraf
       INFLUXDB_USER_WRITE_DATABASE: telegraf
-      INFLUXDB_ADMIN_USER_TOKEN: ${AUTH_TOKEN}
+      INFLUXDB_ADMIN_USER_TOKEN: my_token
       INFLUXDB_ORG: 'mema_org'
       INFLUXDB_BUCKET: 'mema_bucket'
     volumes:
-      - ./influxdb:
+      - ./influxdb:/var/lib/influxdb
+    networks:
+      - ost-sm
 
+  # grafana service
   grafana:
     image: grafana/grafana:latest
     ports:
@@ -96,6 +100,7 @@ services:
     networks:
       - ost-sm
 
+  # spark service
   spark:
     image: "jupyter/pyspark-notebook"
     ports:
@@ -110,6 +115,5 @@ services:
         target: /home/jovyan/work
     networks:
       - ost-sm
-
     depends_on:
       - zookeeper
