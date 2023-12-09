@@ -36,7 +36,7 @@ To set up the pipeline, follow these steps:
 
    This will start all the necessary services and containers for the stream mining pipeline.
 
-4. Currently you have to manually configure influxdb. To do this, open the influxdb UI in your browser at http://localhost:8086. Then, create an org `mema_org`, a bucket called `mema_bucket` and an admin called `admin` with password `admin1234`. Then, copy the token of the admin user and paste it into the `telegraf.conf` file. (Later you will be able to copy it into the `INFLUXDB_TOKEN` variable in the `.env` file. But for now, this option is not working.) 
+4. Currently you have to manually configure influxdb. To do this, open the influxdb UI in your browser at http://localhost:8086. Then, create an org `mema_org`, a bucket called `mema_bucket` and an admin called `admin` with password `admin1234`. Then, copy the token of the admin user and paste it into the `telegraf.conf` file. (Later you will be able to copy it into the `INFLUXDB_TOKEN` variable in the `.env` file. But for now, this option is not working.)
 
 TODO: add correct cli commands.
 You can also do this by running the following commands in the influxdb CLI:
@@ -48,6 +48,7 @@ You can also do this by running the following commands in the influxdb CLI:
    > create user telegraf with password 'telegraf1234'
    > grant all on mema_bucket to telegraf
    ```
+5. Restart the telegraf in docker so that the token changes will be updated. (Alternatively you can restart the whole docker compose.)
 
 ## Starting Modules Manually
 
