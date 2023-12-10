@@ -78,10 +78,13 @@ services:
       INFLUXDB_USER_READ_DATABASE: telegraf
       INFLUXDB_USER_WRITE_DATABASE: telegraf
       INFLUXDB_ADMIN_USER_TOKEN: my_token
-      INFLUXDB_ORG: 'mema_org'
-      INFLUXDB_BUCKET: 'mema_bucket'
+      INFLUXDB_ORG: ${INFLUXDB_ORG}
+      INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
     volumes:
-      - ./influxdb:/var/lib/influxdb
+      # - ./influxdb:/var/lib/influxdb
+      - influxdb-data:/var/lib/influxdb2:rw
+    env_file:
+      - .env
     networks:
       - ost-sm
 
@@ -117,3 +120,6 @@ services:
       - ost-sm
     depends_on:
       - zookeeper
+
+volumes:
+  influxdb-data:
