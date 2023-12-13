@@ -1,5 +1,12 @@
 # A jelenlegi szituáció és prlemák a flinkkel kapcsolatban
 
+# Update:
+A flink maga megy, jelenleg kicsit csúnyán betettem a docker compose-t és a Dockerfile-t is a 
+`marcell_change_detection` mappába, hogy ne legyen gond az elérési utakkal.
+A flink megy, elvileg meg is van adva neki ez a folder, ahol vannak a scriptek, de automatikusan nem fedezi fel őket.
+Ezért a flink UI-ban és a dockerbe belépve a flink CLI-ban próbáltam futtatni a jobot, de azt mondja, hogy csak JAR fájlokat tud futtatni.
+Aminek elvileg nem így kellene lennije.
+
 ## Setup
 `stream_miner.py` egy flink job, ami a `hai-preprocessed` topicból olvas be, és a `hai-results` topicba írja a feldolgozott adatokat.
 A flink egy docker containerben fut, a többi szükséges komponenssel együtt. Ezek a `pipeline` mappában vannak egy docker-compose fileban.

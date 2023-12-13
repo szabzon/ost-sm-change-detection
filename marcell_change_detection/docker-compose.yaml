@@ -119,28 +119,29 @@ services:
       - zookeeper
 
 
-  flink-jobmanager:
-    image: flink:latest
-    expose:
-      - "6123"
+  jobmanager:
+    image: pyflink:1.14.0
+    volumes:
+    - ./:/home/pyflink
     ports:
-      - "8081:8081"
+      - "8085:8081"
     command: jobmanager
-    networks:
-      - ost-sm
-    volumes:
-      - ../marcell_change_detection:/scripts
-
-  flink-taskmanager:
-    image: flink:latest
-    expose:
-      - "6121"
     environment:
-      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
-    depends_on:
-      - flink-jobmanager
-    command: taskmanager
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
     networks:
       - ost-sm
-    volumes:
-      - ../marcell_change_detection:/scripts
+
+  taskmanager:
+    image: pyflink:1.14.0
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 2
+    networks:
+      - ost-sm
