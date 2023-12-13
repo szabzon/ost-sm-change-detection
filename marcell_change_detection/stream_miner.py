@@ -16,15 +16,42 @@ from pyflink.common.serialization import SimpleStringSchema
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from drift_detectors.ddm import DDM
+from drift_detectors.basic_window_ddm import BasicWindowDDM
+from model_handlers.model_trainer import ModelTrainerTester
 from sklearn.ensemble import RandomForestClassifier
 import json
+from data_loaders.train_loader import TrainLoader
 
 
 class DriftDetectionProcessFunction(ProcessFunction):
+    def __init__(self):
+        # Initialize the ProcessFunction
+        super().__init__()
+
+    def load_data(self):
+        # import csv training data
+        data_folder = '../../hai_dataset/hai/hai-21.03'
+        data_filenames = ['train1.csv', 'train2.csv', 'train3.csv']
+        label_columns = ['attack', 'attack_P1', 'attack_P2', 'attack_P3']
+        # Load the training data
+        data_loader = TrainLoader(data_folder=data_folder, data_filenames=data_filenames, label_columns=label_columns)
+        df = data_loader.get_data()
+        return data_loader.split_data(data_frame=df)
+
+    def train_model(self, X_train, X_test, y_train, y_test):
+        # Train the classifier
+        model_handler = ModelTrainerTester(classifier=self.clf, X_train=X_train, y_train=y_train)
+        clf = model_handler.train_model()
+        _, tr_accuracy = model_handler.test_model(X_test=X_test, y_test=y_test)
+        return clf
+
     def open(self, runtime_context):
-        # Initialize the classifier and DDM model
+        # Initialize the model and the drift detector
         self.clf = RandomForestClassifier()
         self.ddm = DDM()
+
+        X_train, X_test, y_train, y_test = self.load_data()
+        self.clf = self.train_model(X_train, X_test, y_train, y_test)
 
     def process_element(self, value, ctx, collector):
         # Extract features and labels from the input value
@@ -55,7 +82,7 @@ class DriftDetectionProcessFunction(ProcessFunction):
 # Set up the StreamExecutionEnvironment
 env = StreamExecutionEnvironment.get_execution_environment()
 env.get_config()
-env.add_jars("file:///flink-connector-kafka.jar")
+env.add_jars("file:///flink_dependencies/flink-connector-kafka.jar")
 #env.add_classpaths("file:///flink-connector-kafka.jar")
 
 # Define the Kafka properties

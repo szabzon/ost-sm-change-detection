@@ -1,5 +1,26 @@
 # A jelenlegi szituáció és prlemák a flinkkel kapcsolatban
 
+
+# Update 2:
+- Kicsit javítottam a kód minőségén és a mappa struktúrán, hogy kezelhetőbb legyen a projekt.
+- Még továbbra is minden a `marcell_change_detection` mappában van, ezen belül dolgozok.
+- Ez alól egy kivétel van, a `data_loading/data_loader.ipynb` fájl, ami a test data streameléséhez kell.
+- A compose-ban és Dockerfile-ban található elérési utak módosultak kicsit.
+- A flink dependency-ket betettem a `flink_dependencies` mappába.
+- A `drift_detectors` mappában vannak továbbra is a drift detektáló algoritmusok, ezeket bővítettem.
+- A `data_loaders` mappában vannak a data loader-ek, mind a training data-hoz és mind a stream-hez (test data) ezeket is refaktoráltam részben.
+- A `model_handlers` mappában van a model trainer-tester osztály.
+- A `stream_miner.ipynb` fájlban található a jelenleg is futtatható drift detekció FLINK NÉLKÜL.
+- A `stream_miner.py` fájlban található a jelenleg még nem futtatható drift detekció FLINK JOB. Ezt kéne valahogy futtatni, de nem megy.
+- A `stream_preprocessor.ipynb` fájlban található a stream preprocessor, ami a stream-et előkészíti a drift detekcióhoz. Később ezt is ki szeretném szervezni Flink job-ba.
+
+**A jelenlegiek futtatása:**
+1. Getting started részben leírtak szerint kell elindítani a docker-compose file-t, annyi különbséggel, hogy a a `marcell_change_detection` mappában kell lenni, így a compose file-t is onnan kell elindítani.
+2. A `../data_loading/data_loader.ipynb` fájlt futtatva lehet streamelni a test adatokat a `hai-input` kafka topicba.
+3. A `stream_preprocessor.ipynb` fájlt futtatva lehet előkészíteni a stream-et a drift detekcióhoz. Ez a `hai-input` topicból olvas be, és a `hai-preprocessed` topicba írja a feldolgozott adatokat.
+4. A `stream_miner.ipynb` fájlt futtatva lehet futtatni a drift detekciót FLINK NÉLKÜL. Ez a `hai-preprocessed` topicból olvas be, és a `hai-results` topicba írja a feldolgozott adatokat.
+5. A `stream_miner.py`-ban található flink job-ot kéne futtatni a 4. pont helyett, ha menne. Elvileg a különbség csak a flink-használatában van, a többi ugyanaz, mint az ipynb. (Ehhez fontos, hogy az előző update-ben megadott linkeken lévő fájlokat be kell másolni a `flink_dependencies` mappába.)
+
 # Update:
 A flink maga megy, jelenleg kicsit csúnyán betettem a docker compose-t és a Dockerfile-t is a 
 `marcell_change_detection` mappába, hogy ne legyen gond az elérési utakkal.
