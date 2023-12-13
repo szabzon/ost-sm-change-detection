@@ -6,6 +6,9 @@ A flink maga megy, jelenleg kicsit csúnyán betettem a docker compose-t és a D
 A flink megy, elvileg meg is van adva neki ez a folder, ahol vannak a scriptek, de automatikusan nem fedezi fel őket.
 Ezért a flink UI-ban és a dockerbe belépve a flink CLI-ban próbáltam futtatni a jobot, de azt mondja, hogy csak JAR fájlokat tud futtatni.
 Aminek elvileg nem így kellene lennije.
+Túl nagy fájlok, ezért nem tudtam feltenni githubra, a marcell_change_detection mappába kell tenni őket.
+- https://files.pythonhosted.org/packages/ad/ef/f89e77d4edf273992b172ceb382e0da97aa6b156f6d232ed0bb0bbb0fa1f/apache-flink-1.18.0.tar.gz
+- https://files.pythonhosted.org/packages/af/41/63f7cebe2c450dcc6ae8d12e916b2765b4600e4ac18253bb8a6d27235938/apache-flink-libraries-1.18.0.tar.gz
 
 ## Setup
 `stream_miner.py` egy flink job, ami a `hai-preprocessed` topicból olvas be, és a `hai-results` topicba írja a feldolgozott adatokat.

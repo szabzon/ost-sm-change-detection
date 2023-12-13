@@ -17,3 +17,5 @@
 /.idea/.gitignore
 /data_loading/hai-23_05/*.csv
 /data_loading/hai-23_05/*.txt
+/marcell_change_detection/apache-flink-1.18.0.tar.gz
+/marcell_change_detection/apache-flink-libraries-1.18.0.tar.gz
