@@ -1,57 +1,3 @@
-'''
-input_topic = 'hai-preprocessed'
-input_bootstrap_servers = ['localhost:9092']
-consumer = StreamConsumer(input_topic, input_bootstrap_servers)
-#%%
-output_topic = 'hai-results'
-output_bootstrap_servers = ['localhost:9092']
-producer = ResultsProducer(output_topic, output_bootstrap_servers)
-#%%
-# initialize drift detector
-ddm = DDM()
-
-# consume the streamed data from kafka and detect drift
-msg = consumer.consume_next()
-i = 0
-while msg:
-    # get the data from the message
-    data = msg.value
-    #print(data['features'])
-    # convert the dictionary to a dataframe
-    X = pd.DataFrame(data['features'], index=[0])
-    # get the labels
-    y = pd.DataFrame(data['labels'], index=[0])
-    # predict the labels
-    y_pred = clf.predict(X)
-    # get the accuracy
-    accuracy = accuracy_score(y, y_pred)
-    # detect drift
-    ddm.add_element(accuracy)
-    warning_detected = ddm.detected_warning_zone()
-    drift_detected = ddm.detected_change()
-    
-    # send the results
-    producer.send({'accuracy': accuracy, 'warning_detected': warning_detected, 'drift_detected': drift_detected})
-    
-    # print the results
-    """if accuracy < 0.5:
-        print('Iteration {}'.format(i), 'Accuracy {}'.format(accuracy))
-    """
-    if i % 1000 == 0:
-        print('Iteration {}'.format(i), 'Accuracy {}'.format(accuracy))
-    if drift_detected:
-        print(f'{datetime.now()} - accuracy: {accuracy} - drift detected: {drift_detected}')
-    # get the next message
-    msg = consumer.consume_next()
-    i += 1
-'''
-
-import os
-import pandas as pd
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
-from drift_detectors.ddm import DDM
-from model_trainer import DataLoaderProcessor, ModelTrainerTester
 
 
 """
@@ -62,3 +8,84 @@ Use the drift detector to detect drift.
 Produce the results.
 """
 
+from pyflink.datastream import StreamExecutionEnvironment
+from pyflink.datastream.connectors import FlinkKafkaConsumer, FlinkKafkaProducer
+from pyflink.datastream.functions import ProcessFunction
+from pyflink.common.serialization import SimpleStringSchema
+
+import pandas as pd
+from sklearn.metrics import accuracy_score
+from drift_detectors.ddm import DDM
+from sklearn.ensemble import RandomForestClassifier
+import json
+
+
+class DriftDetectionProcessFunction(ProcessFunction):
+    def open(self, runtime_context):
+        # Initialize the classifier and DDM model
+        self.clf = RandomForestClassifier()
+        self.ddm = DDM()
+
+    def process_element(self, value, ctx, collector):
+        # Extract features and labels from the input value
+        data = json.loads(value)
+        X = pd.DataFrame(data['features'], index=[0])
+        y = pd.DataFrame(data['labels'], index=[0])
+
+        # Predict labels using the classifier
+        y_pred = self.clf.predict(X)
+
+        # Calculate accuracy
+        accuracy = accuracy_score(y, y_pred)
+
+        # Update the DDM model and check for drift
+        self.ddm.add_element(accuracy)
+        warning_detected = self.ddm.detected_warning_zone()
+        drift_detected = self.ddm.detected_change()
+
+        # Send the results to Kafka
+        producer.send('hai-results', value={'accuracy': accuracy, 'warning_detected': warning_detected, 'drift_detected': drift_detected})
+
+        '''# Print the results (optional)
+        if ctx.get_current_key() % 1000 == 0:
+            print('Iteration {}'.format(ctx.get_current_key()), 'Accuracy {}'.format(accuracy))
+        if drift_detected:
+            print(f'{datetime.now()} - accuracy: {accuracy} - drift detected: {drift_detected}')'''
+
+# Set up the StreamExecutionEnvironment
+env = StreamExecutionEnvironment.get_execution_environment()
+env.get_config()
+env.add_jars("file:///flink-connector-kafka.jar")
+#env.add_classpaths("file:///flink-connector-kafka.jar")
+
+# Define the Kafka properties
+kafka_properties = {
+    'bootstrap.servers': 'localhost:9092',
+    'group.id': 'flink-drift-detection-job'
+}
+
+# Create a Kafka consumer
+consumer = FlinkKafkaConsumer(
+    'hai-preprocessed',
+    SimpleStringSchema(),
+    properties=kafka_properties
+)
+
+# Add the Kafka consumer to the environment
+input_stream = env.add_source(consumer)
+
+# Apply the ProcessFunction to the input stream
+processed_stream = input_stream.process(DriftDetectionProcessFunction())
+
+# Create a Kafka producer
+producer = FlinkKafkaProducer(
+    'hai-results',
+    SimpleStringSchema(),
+    properties=kafka_properties
+)
+
+# Add the Kafka producer to the environment
+processed_stream.add_sink(producer)
+
+# Execute the Flink job
+env.execute("PyFlink Drift Detection Example")

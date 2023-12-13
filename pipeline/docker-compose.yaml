@@ -117,3 +117,30 @@ services:
       - ost-sm
     depends_on:
       - zookeeper
+
+
+  flink-jobmanager:
+    image: flink:latest
+    expose:
+      - "6123"
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    networks:
+      - ost-sm
+    volumes:
+      - ../marcell_change_detection:/scripts
+
+  flink-taskmanager:
+    image: flink:latest
+    expose:
+      - "6121"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    depends_on:
+      - flink-jobmanager
+    command: taskmanager
+    networks:
+      - ost-sm
+    volumes:
+      - ../marcell_change_detection:/scripts
