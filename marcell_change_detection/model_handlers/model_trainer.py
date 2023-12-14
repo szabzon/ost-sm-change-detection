@@ -26,3 +26,6 @@ class ModelTrainerTester:
         accuracy = accuracy_score(y_test, y_pred)
 
         return y_pred, accuracy
+
+
+
