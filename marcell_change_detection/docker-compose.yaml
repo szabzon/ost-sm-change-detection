@@ -120,7 +120,7 @@ services:
 
 
   jobmanager:
-    image: pyflink:1.14.0
+    image: pyflink:1.17.0
     volumes:
     - ./:/home/pyflink
     ports:
@@ -134,7 +134,7 @@ services:
       - ost-sm
 
   taskmanager:
-    image: pyflink:1.14.0
+    image: pyflink:1.17.0
     depends_on:
       - jobmanager
     command: taskmanager

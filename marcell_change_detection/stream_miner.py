@@ -12,6 +12,7 @@ from pyflink.datastream import StreamExecutionEnvironment
 from pyflink.datastream.connectors import FlinkKafkaConsumer, FlinkKafkaProducer
 from pyflink.datastream.functions import ProcessFunction
 from pyflink.common.serialization import SimpleStringSchema
+from pyflink.common import Configuration
 
 import pandas as pd
 from sklearn.metrics import accuracy_score
@@ -79,13 +80,15 @@ class DriftDetectionProcessFunction(ProcessFunction):
         if drift_detected:
             print(f'{datetime.now()} - accuracy: {accuracy} - drift detected: {drift_detected}')'''
 
+
 # Set up the StreamExecutionEnvironment
 env = StreamExecutionEnvironment.get_execution_environment()
-env.get_config()
-env.add_jars("file:///flink_dependencies/flink-connector-kafka.jar")
-#env.add_classpaths("file:///flink-connector-kafka.jar")
+env.add_jars("file:///C:/Users/Marcell/Documents/Egyetem/Open Source Technologies/ost-sm-change-detection/marcell_change_detection/flink-connector-kafka.jar","file:///C:/Users/Marcell/Documents/Egyetem/Open Source Technologies/ost-sm-change-detection/marcell_change_detection/kafka-clients.jar")
+#env.add_classpaths("file:///kafka-clients.jar")
 
 # Define the Kafka properties
+# set serializer
+# set deserializer
 kafka_properties = {
     'bootstrap.servers': 'localhost:9092',
     'group.id': 'flink-drift-detection-job'
@@ -108,7 +111,7 @@ processed_stream = input_stream.process(DriftDetectionProcessFunction())
 producer = FlinkKafkaProducer(
     'hai-results',
     SimpleStringSchema(),
-    properties=kafka_properties
+    producer_config=kafka_properties
 )
 
 # Add the Kafka producer to the environment
