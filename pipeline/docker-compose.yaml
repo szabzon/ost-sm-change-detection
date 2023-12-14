@@ -44,19 +44,33 @@ services:
       - "8081:8081"
     command: jobmanager
 
-  # flink-taskmanager:
-  #   image: flink:latest
-  #   expose:
-  #     - "6121"
-  #   command: taskmanager
-  #   links:
-  #     - flink-jobmanager:jobmanager
-  #   networks:
-  #     - ost-sm
+ # influxdb service
+  influxdb:
+    image: influxdb:latest
+    ports:
+      - "8086:8086"
+    environment:
+      # some of these do not seem to have any effect
+      # e.g. token and users are not created
+      # TODO: investigate
+      # when you first run the docker-compose file, you need to create the token and users manually!
+      INFLUXDB_DB: influxdb
+      INFLUXDB_ADMIN_USER: ${ADMIN_USERNAME}
+      INFLUXDB_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      INFLUXDB_USER: telegraf_user
+      INFLUXDB_USER_PASSWORD: telegraf_pass
+      INFLUXDB_USER_READ_DATABASE: telegraf
+      INFLUXDB_USER_WRITE_DATABASE: telegraf
+      INFLUXDB_ADMIN_USER_TOKEN: my_token
+      INFLUXDB_ORG: 'mema_org'
+      INFLUXDB_BUCKET: 'mema_bucket'
+    volumes:
+      - ./influxdb:/var/lib/influxdb
+    networks:
+      - ost-sm
 
   # telegraf, influxdb, grafana
   telegraf:
-    container_name: telegraf
     image: telegraf:latest
     restart: always
     volumes:
@@ -70,24 +84,18 @@ services:
     networks:
       - ost-sm
 
-  influxdb:
-    image: influxdb:latest
-    ports:
-      - "8086:8086"
-    environment:
-      INFLUXDB_DB: influxdb
-      INFLUXDB_ADMIN_USER: ${ADMIN_USERNAME}
-      INFLUXDB_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
-      INFLUXDB_USER: telegraf_user
-      INFLUXDB_USER_PASSWORD: telegraf_pass
-      INFLUXDB_USER_READ_DATABASE: telegraf
-      INFLUXDB_USER_WRITE_DATABASE: telegraf
-      INFLUXDB_ADMIN_USER_TOKEN: ${AUTH_TOKEN}
-      INFLUXDB_ORG: 'mema_org'
-      INFLUXDB_BUCKET: 'mema_bucket'
+  telegraf2:
+    image: telegraf:latest
+    depends_on:
+      - influxdb
     volumes:
-      - ./influxdb:/var/lib/influxdb
-
+      - ./telegrafemma.conf:/etc/telegraf/telegraf.conf:ro
+    ports:
+      - "8124:8124"
+    links:
+      - influxdb
+    networks:
+      - ost-sm
 
   grafana:
     image: grafana/grafana:latest
@@ -97,6 +105,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: admin
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ALLOW_EMBEDDING: "true"
+      GF_PLUGIN_ALLOW_LOCAL_MODE: "true"
     links:
       - influxdb
       - telegraf
