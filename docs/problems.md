@@ -19,7 +19,7 @@
 2. A `../data_loading/data_loader.ipynb` fájlt futtatva lehet streamelni a test adatokat a `hai-input` kafka topicba.
 3. A `stream_preprocessor.ipynb` fájlt futtatva lehet előkészíteni a stream-et a drift detekcióhoz. Ez a `hai-input` topicból olvas be, és a `hai-preprocessed` topicba írja a feldolgozott adatokat.
 4. A `stream_miner.ipynb` fájlt futtatva lehet futtatni a drift detekciót FLINK NÉLKÜL. Ez a `hai-preprocessed` topicból olvas be, és a `hai-results` topicba írja a feldolgozott adatokat.
-5. A `stream_miner.py`-ban található flink job-ot kéne futtatni a 4. pont helyett, ha menne. Elvileg a különbség csak a flink-használatában van, a többi ugyanaz, mint az ipynb. (Ehhez fontos, hogy az előző update-ben megadott linkeken lévő fájlokat be kell másolni a `flink_dependencies` mappába.)
+5. A `stream_miner.py`-ban található flink job-ot kéne futtatni a 4. pont helyett, ha menne. Elvileg a különbség csak a flink-használatában van, a többi ugyanaz, mint az ipynb. (Ehhez fontos, hogy az előző update-ben megadott linkeken lévő fájlokat be kell másolni a `flink_dependencies` mappába.) Továbbá, a `docker build --tag pyflink:1.14.0 . ` parancsot ki kell adni a `marcell_change_detection` mappában, hogy legyen egy docker image, amit a compose file használhat.
 
 # Update:
 A flink maga megy, jelenleg kicsit csúnyán betettem a docker compose-t és a Dockerfile-t is a 
