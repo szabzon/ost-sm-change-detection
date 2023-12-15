@@ -20,6 +20,7 @@ class DDM:
         self.min_instances = min_num_instances
         self.warning_level = warning_level
         self.out_control_level = out_control_level
+
         self.reset()
 
     def reset(self):
@@ -42,28 +43,13 @@ class DDM:
 
     def detected_change(self):
         """ detected_change
-
         This function returns whether concept drift was detected or not.
-
-        Returns
-        -------
-        bool
-            Whether concept drift was detected or not.
-
         """
         return self.in_concept_change
 
     def detected_warning_zone(self):
         """ detected_warning_zone
-
-        If the change detector supports the warning zone, this function will return
-        whether it's inside the warning zone or not.
-
-        Returns
-        -------
-        bool
-            Whether the change detector is in the warning zone or not.
-
+        This function returns whether it's inside the warning zone or not.
         """
         return self.in_warning_zone
 
