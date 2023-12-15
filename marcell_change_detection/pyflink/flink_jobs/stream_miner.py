@@ -83,8 +83,10 @@ class DriftDetectionProcessFunction(ProcessFunction):
 
 # Set up the StreamExecutionEnvironment
 env = StreamExecutionEnvironment.get_execution_environment()
-env.add_jars("file:///C:/Users/Marcell/Documents/Egyetem/Open Source Technologies/ost-sm-change-detection/marcell_change_detection/flink-connector-kafka.jar","file:///C:/Users/Marcell/Documents/Egyetem/Open Source Technologies/ost-sm-change-detection/marcell_change_detection/kafka-clients.jar")
-#env.add_classpaths("file:///kafka-clients.jar")
+env.add_jars(
+    "file:///home/pyflink/flink/flink_dependencies/flink-connector-kafka.jar",
+    "file:///home/pyflink/flink/flink_dependencies/kafka-clients.jar"
+)
 
 # Define the Kafka properties
 # set serializer
@@ -118,4 +120,4 @@ producer = FlinkKafkaProducer(
 processed_stream.add_sink(producer)
 
 # Execute the Flink job
-env.execute("PyFlink Drift Detection Example")
+env.execute("PyFlink Drift Detection")

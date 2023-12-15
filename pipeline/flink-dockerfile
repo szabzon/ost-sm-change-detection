@@ -37,10 +37,10 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # copy working directory with flink dependencies
-COPY marcell_change_detection/ /home/pyflink
+COPY marcell_change_detection/pyflink /home/pyflink
 
 # install PyFlink
-RUN pip3 install /home/pyflink/flink/apache-flink-libraries*.tar.gz && pip3 install /home/pyflink/flink/apache-flink*.tar.gz
+RUN pip3 install /home/pyflink/flink_dependencies/apache-flink-libraries*.tar.gz && pip3 install /home/pyflink/flink_dependencies/apache-flink*.tar.gz
 
 # install required python packages from txt file
-RUN pip3 install -r /home/pyflink/flink/flink_requirements.txt
+RUN pip3 install -r /home/pyflink/flink_dependencies/flink_requirements.txt
