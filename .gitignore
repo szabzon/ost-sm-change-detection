@@ -19,5 +19,5 @@
 /data_loading/hai-23_05/*.txt
 /marcell_change_detection/apache-flink-1.18.0.tar.gz
 /marcell_change_detection/apache-flink-libraries-1.18.0.tar.gz
-/marcell_change_detection/flink_dependencies/apache-flink-1.18.0.tar.gz
-/marcell_change_detection/flink_dependencies/apache-flink-libraries-1.18.0.tar.gz
+/marcell_change_detection/flink/apache-flink-1.18.0.tar.gz
+/marcell_change_detection/flink/apache-flink-libraries-1.18.0.tar.gz

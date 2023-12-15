@@ -22,16 +22,19 @@ To set up the pipeline, follow these steps:
    git clone https://github.com/szabzon/ost-sm-change-detection.git
    ```
 
-2. Navigate to the pipeline directory:
+2. Build the flink docker image:
 
    ```bash
-   cd pipeline
+   docker build -f pipeline/flink-dockerfile --tag pyflink:1.17.0 .
    ```
+
+   
 
 3. Start the pipeline using Docker Compose:
 
    ```bash
-   docker-compose up -d
+   docker compose -f pipeline/docker-compose.yaml up
+
    ```
 
    This will start all the necessary services and containers for the stream mining pipeline.

@@ -1,2 +1,0 @@
-opt/flink/bin/flink run --python home/pyflink/stream_miner.py --jarfile home/pyflink/flink-connector-kafka.jar
-root@1bd64c8ffb93:/# cp home/pyflink/flink-connector-kafka.jar
