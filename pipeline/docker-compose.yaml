@@ -35,6 +35,7 @@ services:
       KAFKA_CREATE_TOPICS: "hai-input:1:1,hai-preprocessed:1:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./spark:/sparkScripts:rw
     depends_on:
       - zookeeper
     networks:
@@ -104,22 +105,23 @@ services:
       - ost-sm
 
   # spark service
-  spark:
-    image: "jupyter/pyspark-notebook"
+  pyspark:
+    container_name: pyspark
+    image: docker.io/bitnami/spark:3
+    hostname: spark
+    build: ./spark
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
     ports:
-      - '8888:8888'
-      - '4040:4040'
-      - '4041:4041'
-    links:
-      - "kafka:kafka-server" # allows spark notebook to discover kafka service by name "kafka-server"
-    volumes:
-      - type: bind
-        source: ./
-        target: /home/jovyan/work
+        - 8080:8080
     networks:
-      - ost-sm
-    depends_on:
-      - zookeeper
+        - ost-sm
+    volumes:
+        - ./spark:/sparkScripts:rw
 
 volumes:
   influxdb-data:
