@@ -100,23 +100,42 @@ services:
     networks:
       - ost-sm
 
-  # spark service
-  spark:
-    image: "jupyter/pyspark-notebook"
+  spark-master:
+    image: bitnami/spark:latest
+    environment:
+      - SPARK_MODE=master
     ports:
-      - '8888:8888'
-      - '4040:4040'
-      - '4041:4041'
-    links:
-      - "kafka:kafka-server" # allows spark notebook to discover kafka service by name "kafka-server"
-    volumes:
-      - type: bind
-        source: ./
-        target: /home/jovyan/work
+      - "7077:7077"
+      - "8080:8080"
     networks:
       - ost-sm
     depends_on:
       - zookeeper
+    volumes:
+      - ../:/home/jovyan/work
+
+  spark-worker-1:
+    image: bitnami/spark:latest
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    depends_on:
+      - spark-master
+    networks:
+      - ost-sm
+
+  pyspark-notebook:
+    image: jupyter/pyspark-notebook:latest
+    environment:
+      - SPARK_OPTS="--master spark://spark-master:7077"
+    ports:
+      - "8888:8888"
+    depends_on:
+      - spark-master
+    networks:
+      - ost-sm
+    volumes:
+      - ../:/home/jovyan/work
 
 
   jobmanager:

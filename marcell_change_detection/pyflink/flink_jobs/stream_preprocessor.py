@@ -69,10 +69,40 @@ from pyflink.table import StreamTableEnvironment, EnvironmentSettings
 
 # implement the process function
 class StreamPreprocessorProcessFunction(ProcessFunction):
+    """
+    Class for preprocessing the stream in flink.
+    Prepare the data for testing. Split the data to features and labels.
+    """
+
     def open(self, runtime_context):
+        """
+        Open the process function
+        :param runtime_context: the runtime context
+        :return:
+        """
         self.input_keys = input_columns
 
+    def prepare_data(self, message_dict):
+        """
+        Prepare the data for testing.
+        :param message_dict: kafka message of type dict
+        :return: a dict of preprocessed data
+        """
+        # fill missing values with 0
+        for key in message_dict:
+            if message_dict[key] == '':
+                message_dict[key] = 0
+
+        return message_dict
+
     def map_keys(self, message, input_keys):
+        """
+        Map the keys from the input message to the output message.
+        Split the data to features and labels.
+        :param message: kafka message of type dict
+        :param input_keys: ordered list of keys in the input message
+        :return: output_dict: dict with keys 'time', 'features', 'labels'
+        """
         # print(message)
         output_dict = {
             'time': message.pop('time'),
@@ -90,8 +120,16 @@ class StreamPreprocessorProcessFunction(ProcessFunction):
         return output_dict
 
     def process_element(self, value, ctx: 'ProcessFunction.Context'):
+        """
+        Run the stream preprocessor for one element in the stream.
+        Prepare the data for testing. Split the data to features and labels.
+        :param value: the value of the element in the stream
+        :param ctx: the context
+        :return:
+        """
         # print(value)
         data = json.loads(value)
+        data = self.prepare_data(data)
         output_dict = self.map_keys(data, self.input_keys)
         ctx.output('hai-preprocessed', json.dumps(output_dict))
 
