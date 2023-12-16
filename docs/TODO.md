@@ -8,4 +8,4 @@
  - finish grafana dashboard
  - create plots for each drift detection method
  - do comparison of drift detection methods and results conclusion
- - document code
+ - ~~document code~~

@@ -27,6 +27,7 @@ class KafkaDataStreamer:
         """
         for data_path in data_paths:
             data = pd.read_csv(data_path)
+            print('Streaming data from {}'.format(data_path))
             for i, row in data.iterrows():
                 message = row.to_json()
                 self.producer.send(self.topic, value=message.encode('utf-8'))
