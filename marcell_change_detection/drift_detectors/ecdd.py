@@ -1,5 +1,7 @@
 class ECDD:
-    def __init__(self, alpha = 0.05, warning_threshold=0.1, warning_zone_size=0.05, drift_threshold=0.2, drift_zone_size=0.1):
+    def __init__(self, alpha = 0.05, warning_threshold=0.1, drift_threshold=0.2):
+        self.name = "ECDD"
+
         self.alpha = alpha
         self.warning_threshold = warning_threshold
         self.drift_threshold = drift_threshold
@@ -8,6 +10,9 @@ class ECDD:
         self.ewma = 0
 
         self.reset()
+
+    def get_name(self):
+        return self.name
 
     def reset(self):
         self.in_warning_zone = False

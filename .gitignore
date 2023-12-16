@@ -19,7 +19,7 @@
 /data_loading/hai-23_05/*.txt
 /marcell_change_detection/apache-flink-1.18.0.tar.gz
 /marcell_change_detection/apache-flink-libraries-1.18.0.tar.gz
-/marcell_change_detection/flink/flink_dependencies/apache-flink-1.18.0.tar.gz
-/marcell_change_detection/flink/flink_dependencies/apache-flink-libraries-1.18.0.tar.gz
 /marcell_change_detection/pyflink/flink_dependencies/apache-flink-1.18.0.tar.gz
 /marcell_change_detection/pyflink/flink_dependencies/apache-flink-libraries-1.18.0.tar.gz
+/hai_dataset/hai
+/marcell_change_detection/.ipynb_checkpoints/

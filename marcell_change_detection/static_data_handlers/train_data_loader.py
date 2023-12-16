@@ -2,8 +2,10 @@ import os
 from sklearn.model_selection import train_test_split
 from functools import reduce
 from pyspark.sql import DataFrame
+import pandas as pd
 
-'''class TrainLoader2:
+
+class TrainLoaderPython:
     """
     Class for loading the training data and preparing it for training
     """
@@ -51,10 +53,10 @@ from pyspark.sql import DataFrame
         """
         column_names = data_frame.columns.tolist()
 
-        return column_names'''
+        return column_names
 
 
-class TrainLoader:
+class TrainLoaderSpark:
     def __init__(self, spark, data_folder, data_filenames, label_columns):
         """
         Class for loading the training data and preparing it for training

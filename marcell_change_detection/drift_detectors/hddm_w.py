@@ -18,6 +18,8 @@ class HDDM_W():
             lambda_option=0.050,
             two_side_option=True):
 
+        self.name = "HDDM_W"
+
         # basic drift detection attributes
         self.in_concept_change = None
         self.in_warning_zone = None
@@ -38,6 +40,9 @@ class HDDM_W():
         self.warning_confidence = warning_confidence
         self.lambda_option = lambda_option
         self.two_side_option = two_side_option
+
+    def get_name(self):
+        return self.name
 
     def reset(self):
         """ reset

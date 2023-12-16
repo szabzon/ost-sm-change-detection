@@ -6,6 +6,8 @@ class DDM:
     """ Drift Detection Method for evolving data streams."""
 
     def __init__(self, min_num_instances=30, warning_level=2.0, out_control_level=3.0):
+        self.name = "DDM"
+
         self.in_concept_change = None
         self.in_warning_zone = None
         self.estimation = None
@@ -22,6 +24,9 @@ class DDM:
         self.out_control_level = out_control_level
 
         self.reset()
+
+    def get_name(self):
+        return self.name
 
     def reset(self):
         """ reset
