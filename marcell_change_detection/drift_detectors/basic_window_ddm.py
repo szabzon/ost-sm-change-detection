@@ -1,6 +1,6 @@
 class BasicWindowDDM:
     def __init__(self, expected_value=1, window_size=20, warning_diff=0.3, out_control_diff=0.5):
-        self.name = "BasicWindowDDM"
+        self.id = 3
 
         self.sample_count = None
         self.window_size = window_size
@@ -15,8 +15,8 @@ class BasicWindowDDM:
 
         self.reset()
 
-    def get_name(self):
-        return self.name
+    def get_id(self):
+        return self.id
 
     def reset(self):
         self.window = []
