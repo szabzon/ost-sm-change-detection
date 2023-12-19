@@ -120,7 +120,7 @@
           "refId": "A"
         }
       ],
-      "timeShift": "221m",
+      "timeShift": "833m",
       "title": "Attacks and Accuracies",
       "transformations": [],
       "type": "timeseries"
@@ -268,7 +268,7 @@
           "refId": "B"
         }
       ],
-      "timeShift": "221m",
+      "timeShift": "833m",
       "title": "DDM results",
       "type": "timeseries"
     },
@@ -530,7 +530,7 @@
           "refId": "B"
         }
       ],
-      "timeShift": "61m",
+      "timeShift": "671m",
       "title": "HDDM-W results",
       "type": "timeseries"
     },
@@ -807,7 +807,7 @@
             "uid": "d558f945-f1ce-4200-9c5b-bd483560881a"
           },
           "hide": false,
-          "query": "from(bucket: \"mema_bucket\")\r\n  |> range(start: 2023-12-17T21:15:00Z, stop: 2023-12-17T22:10:00Z)\r\n  |> filter(fn: (r) => r._measurement == \"hai_results\" and r._field == \"accuracy\")",
+          "query": "from(bucket: \"mema_bucket\")\r\n  |> range(start: 2023-12-17T21:15:00Z, stop: 2023-12-17T22:20:00Z)\r\n  |> filter(fn: (r) => r._measurement == \"hai_results\" and r._field == \"accuracy\")",
           "refId": "A"
         },
         {
@@ -820,7 +820,364 @@
           "refId": "B"
         }
       ],
+      "timeShift": "611m",
       "title": "Basic Window DDM results",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "d558f945-f1ce-4200-9c5b-bd483560881a"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 27,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 0,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "accuracy 131cf4980b9c"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#5dbaaa",
+                  "mode": "fixed",
+                  "seriesBy": "max"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "attack 131cf4980b9c"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#bf8a7e",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 5
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "always"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "drift_detected {_start=\"2023-12-18 07:26:00 +0000 UTC\", _stop=\"2023-12-18 08:14:00 +0000 UTC\", host=\"131cf4980b9c\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 8,
+      "maxDataPoints": 8010000,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "d558f945-f1ce-4200-9c5b-bd483560881a"
+          },
+          "hide": false,
+          "query": "from(bucket: \"mema_bucket\")\r\n  |> range(start: 2023-12-18T07:26:00Z, stop: 2023-12-18T08:14:00Z)\r\n  |> filter(fn: (r) => r._measurement == \"hai_results\" and r._field == \"attack\")\r\n  |> cumulativeSum(columns: [\"_value\"])",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "d558f945-f1ce-4200-9c5b-bd483560881a"
+          },
+          "hide": false,
+          "query": "from(bucket: \"mema_bucket\")\r\n  |> range(start: 2023-12-18T07:26:00Z, stop: 2023-12-18T08:14:00Z)\r\n  |> filter(fn: (r) => r._measurement == \"hai_results\" and (r._field == \"attack\" or r._field == \"drift_detected\"))\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> cumulativeSum(columns: [\"attack\"])\r\n  |> map(fn: (r) => ({r with _value: r.attack + r.drift_detected}))\r\n  |> filter(fn: (r) => r.drift_detected == 1)\r\n  |> yield(name: \"cumulative_sum_with_points_and_filter\")\r\n",
+          "refId": "B"
+        }
+      ],
+      "title": "Cumsum of attacks with multi model drift detection",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "d558f945-f1ce-4200-9c5b-bd483560881a"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 27,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 0,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "drift_detected 131cf4980b9c"
+            },
+            "properties": [
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "always"
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 6
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "accuracy 131cf4980b9c"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#5dbaaa",
+                  "mode": "fixed",
+                  "seriesBy": "max"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "attack 131cf4980b9c"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#bf8a7e",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "id": 7,
+      "maxDataPoints": 8010000,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "d558f945-f1ce-4200-9c5b-bd483560881a"
+          },
+          "hide": false,
+          "query": "from(bucket: \"mema_bucket\")\r\n  |> range(start: 2023-12-18T07:26:00Z, stop: 2023-12-18T08:14:00Z)\r\n  |> filter(fn: (r) => r._measurement == \"hai_results\" and r._field == \"accuracy\")",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "d558f945-f1ce-4200-9c5b-bd483560881a"
+          },
+          "hide": false,
+          "query": "from(bucket: \"mema_bucket\")\r\n  |> range(start: 2023-12-18T07:26:00Z, stop: 2023-12-18T08:40:00Z)\r\n  |> filter(fn: (r) => r._measurement == \"hai_results\" and r._field == \"drift_detected\" and r._value > 0.5)",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "d558f945-f1ce-4200-9c5b-bd483560881a"
+          },
+          "hide": false,
+          "query": "from(bucket: \"mema_bucket\")\r\n  |> range(start: 2023-12-18T07:26:00Z, stop: 2023-12-18T08:40:00Z)\r\n  |> filter(fn: (r) => r._measurement == \"hai_results\" and r._field == \"attack\")",
+          "refId": "C"
+        }
+      ],
+      "title": "Change detection with model selection",
       "type": "timeseries"
     }
   ],
@@ -831,8 +1188,8 @@
     "list": []
   },
   "time": {
-    "from": "2023-12-17T21:18:01.809Z",
-    "to": "2023-12-17T22:02:43.273Z"
+    "from": "2023-12-18T07:28:35.024Z",
+    "to": "2023-12-18T08:14:02.062Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -851,6 +1208,6 @@
   "timezone": "",
   "title": "Change detection",
   "uid": "ce2596d3-df08-41ff-b93a-4ec1630249a6",
-  "version": 28,
+  "version": 42,
   "weekStart": ""
 }

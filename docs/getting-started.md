@@ -51,6 +51,7 @@ so make sure that the files in the hai-21.03 folder are present and extracted.
    ```
 
    This will start all the necessary services and containers for the stream mining pipeline.
+   (In rare cases Kafka may not start properly. If this happens, restart the container.)
 
 
 6. Currently, you have to manually configure influxdb. 
