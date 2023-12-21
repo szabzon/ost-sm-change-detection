@@ -9,8 +9,15 @@ networks:
     driver: bridge
 
 # Services
-# Zookeeper, Kafka
 services:
+
+  pyspark:
+    image: "jupyter/all-spark-notebook"
+    volumes:
+      - /Users/emmatosato/Documents/UNI Locale/Erasmus/OST/ost-sm-change-detection/data_analysis
+    ports:
+      - '8889:8888'
+  
   zookeeper:
     image: wurstmeister/zookeeper:latest
     ports:
@@ -42,7 +49,6 @@ services:
     #command: "bash -c 'start-kafka.sh && ls && sleep 10 && kafka-topics.sh --bootstrap-server localhost:9092 --create --topic hai-input --partitions 1 --replication-factor 1'"
 
   # telegraf, influxdb, grafana
-
   # telegraf service
   telegraf:
     image: telegraf:latest
@@ -60,8 +66,8 @@ services:
     networks:
       - ost-sm
 
-  # influxdb service
-  influxdb:
+ # influxdb service
+ influxdb:
     image: influxdb:latest
     ports:
       - "8086:8086"
@@ -85,7 +91,21 @@ services:
     networks:
       - ost-sm
 
-  # grafana service
+  # telegraf service
+  telegraf2:
+    image: telegraf:latest
+    depends_on:
+      - influxdb
+    volumes:
+      - ./telegrafemma.conf:/etc/telegraf/telegraf.conf:ro
+    ports:
+      - "8124:8124"
+    links:
+      - influxdb
+    networks:
+      - ost-sm
+  
+  # Grafana service
   grafana:
     image: grafana/grafana:latest
     ports:
@@ -94,6 +114,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: admin
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ALLOW_EMBEDDING: "true"
+      GF_PLUGIN_ALLOW_LOCAL_MODE: "true"
     links:
       - influxdb
       - telegraf
