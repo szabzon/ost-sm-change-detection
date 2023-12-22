@@ -1,4 +1,4 @@
-# Data Science Project: Error Rate-Based Change Detection
+# OST project
 
 ## Overview 
 This OST & SM project aims to conduct a comparative analysis of error rate-based change detection methods using the HAI dataset.
