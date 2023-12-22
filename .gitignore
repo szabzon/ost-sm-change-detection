@@ -1,4 +1,5 @@
 .conda
+.DS_Store
 /.idea/misc.xml
 /venv/
 /.idea
