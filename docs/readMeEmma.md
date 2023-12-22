@@ -32,3 +32,6 @@ I want to maintain two branches:
 - "oldVersionEmma" is the result of all the branches and commits I made during this project. I had several problems on the day of submission, but now (22/12) I have handled 
 the situation by resolving all the conflicts and merging all the branches into this one.
 - "finalVersionEmma" is a new branch I created for the submission, which has all the files and configuration well prepared for the project defense.
+
+## Notes
+Because of the large outputs I get in terms of memory, I had to delete them from some jupyter. 
