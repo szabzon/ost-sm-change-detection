@@ -66,8 +66,8 @@ services:
     networks:
       - ost-sm
 
- # influxdb service
- influxdb:
+  # influxdb service
+  influxdb:
     image: influxdb:latest
     ports:
       - "8086:8086"
