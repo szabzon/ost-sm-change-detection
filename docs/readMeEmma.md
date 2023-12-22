@@ -5,13 +5,8 @@ This OST & SM project aims to conduct a comparative analysis of error rate-based
 The overall tasks include importing data from a CSV file, streaming line-by-line to Kafka, implementing different change detection algorithms, storing the data and results in InfluxDB, and presenting the data and results using Grafana.
 
 
-## Architecture
-In the image below, the architecture of the project:
-
-![architecture](architecture.png)
-
 ## Detail documentation
-Detailed documentation on the project can be found in the pdf within this folder.
+Detailed documentation on the project can be found in the pdf and the other readMe file within this folder.
 
 ## My tasks 
 ### Stream mining situation
