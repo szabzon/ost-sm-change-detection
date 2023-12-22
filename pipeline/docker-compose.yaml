@@ -1,11 +1,14 @@
+# Description: docker-compose file for the pipeline
 version: '3.6'
 
+# Networks
+# ost-sm: network for the services,
+#this will be used by the services to communicate with each other
 networks:
   ost-sm:
     driver: bridge
 
 # Services
-# Zookeeper, Kafka, Kafka Manager, Pyspark
 services:
 
   pyspark:
@@ -19,7 +22,10 @@ services:
     image: wurstmeister/zookeeper:latest
     ports:
       - "2181:2181"
+    networks:
+      - ost-sm
 
+  # kafka service using wurstmeister/kafka image
   kafka:
     image: wurstmeister/kafka:latest
     ports:
@@ -33,30 +39,35 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_CREATE_TOPICS: "hai-input:1:1,hai-preprocessed:1:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - zookeeper
+    networks:
+      - ost-sm
+    #command: "bash -c 'start-kafka.sh && ls && sleep 10 && kafka-topics.sh --bootstrap-server localhost:9092 --create --topic hai-input --partitions 1 --replication-factor 1'"
 
-  flink-jobmanager:
-    image: flink:latest
-    expose:
-      - "6123"
+  # telegraf, influxdb, grafana
+  # telegraf service
+  telegraf:
+    image: telegraf:latest
+    restart: always
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+      - influxdb
+      - kafka
+    links:
+      - influxdb
+      - kafka
     ports:
-      - "8081:8081"
-    command: jobmanager
-
-  # flink-taskmanager:
-  #   image: flink:latest
-  #   expose:
-  #     - "6121"
-  #   command: taskmanager
-  #   links:
-  #     - flink-jobmanager:jobmanager
-  #   networks:
-  #     - ost-sm
-
+      - "8125:8125"
+    networks:
+      - ost-sm
 
  # influxdb service
-  influxdb:
+ influxdb:
     image: influxdb:latest
     ports:
       - "8086:8086"
@@ -80,21 +91,7 @@ services:
     networks:
       - ost-sm
 
-  # telegraf, influxdb, grafana
-  telegraf:
-    image: telegraf:latest
-    restart: always
-    volumes:
-      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    depends_on:
-      - influxdb
-    links:
-      - influxdb
-    ports:
-      - "8125:8125"
-    networks:
-      - ost-sm
-
+  # telegraf service
   telegraf2:
     image: telegraf:latest
     depends_on:
@@ -107,7 +104,8 @@ services:
       - influxdb
     networks:
       - ost-sm
-
+  
+  # Grafana service
   grafana:
     image: grafana/grafana:latest
     ports:
@@ -123,6 +121,7 @@ services:
     networks:
       - ost-sm
 
+  # spark service
   spark:
     image: "jupyter/pyspark-notebook"
     ports:
@@ -137,6 +136,5 @@ services:
         target: /home/jovyan/work
     networks:
       - ost-sm
-
     depends_on:
       - zookeeper
