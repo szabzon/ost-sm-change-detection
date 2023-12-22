@@ -23,11 +23,13 @@ In any case, a draft of my work can be found in the file drift_change_detection.
 
 ### Workfolw
 So I organized my work around the use of the static dataset, implementing:
+- docker 
 - batch processing
 - data analysis 
 - data preprocessing
 - data visualization
 - ingesting data into InfluxDB (both with Telgraf and Python framework)
+- understanding of Kakfa
 - training and evaluating ML model
 
 ## About the branches
