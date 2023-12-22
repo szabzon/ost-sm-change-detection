@@ -17,4 +17,4 @@
 /.idea/.gitignore
 /data_loading/hai-23_05/*.csv
 /data_loading/hai-23_05/*.txt
-/.DS_Store
+.DS_Store
